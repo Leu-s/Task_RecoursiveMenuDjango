@@ -1,0 +1,67 @@
+{% load bootstrap4 %}
+{% load static %}
+{% load i18n %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Головна сторінка</title>
+    <link href="{% static 'style/style.css' %}" rel="stylesheet">
+    {% bootstrap_css %}
+</head>
+    <body>
+        <header class="header">
+            <div class="set-lang">
+                <form action="{% url 'set_language' %}" method="post">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path|slice:'3:' }}"/>
+
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% get_language_info_list for LANGUAGES as languages %}
+
+                    {% for language in languages %}
+
+                            <button type="submit"
+                                    name="language"
+                                    value="{{ language.code }}"
+                                    class="{% if language.code == LANGUAGE_CODE %}select{% endif %}"
+                            style="
+                                    {% if language.code == 'uk' %}
+                                        background-image: url('{% static 'images/UA.jpg' %}');
+                                    {% elif language.code == 'ru' %}
+                                        background-image: url('{% static 'images/RU.png' %}');
+                                    {% else %}
+                                        background-image: url('{% static 'images/GB.png' %}');
+                                    {% endif %}
+                                    height: 25px;
+                                    width: 25px;
+                                    background-size: cover">
+                            </button>
+                    {% endfor %}
+                </form>
+            </div>
+
+            <div>
+                <h1>HEADER</h1>
+            </div>
+        </header>
+        <main>
+            <div class="menu-block">
+                <nav>
+
+                    <ul class="top-menu">
+                        {% for category in categories %}
+                            {% if not category.parent %}
+                                {% include 'recursive_menu.html' %}
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+
+                </nav>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+<li>
+
+    <a href="#" class="active">{{ category.title }}</a>
+
+    {% if category.child_category %}
+        <ul class="sub-menu">
+            {% for child in category.child_category.all %}
+                {% with category=child %}
+                    {% include 'recursive_menu.html' %}
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</li>
+
